@@ -45,13 +45,23 @@ const alias = (str) => {
     return aliasStr;
 }
 
-const convertDate = (date) => {
-    const d = new Date(date);
-    const day = d.getDate();
-    const m = d.getMonth();
-    const y = d.getFullYear();
+const Month = ['Một', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín', 'Mười', 'Mười Một', 'Mười Hai']
 
-    const format = `${day}/${m}/${y}`;
+const convertDate = (date, formatDefault = true) => {
+    const d = new Date(date);
+    let day = d.getDate();
+    let m = d.getMonth();
+    let y = d.getFullYear();
+
+    let format = '';
+    
+    if(!formatDefault) {
+        format = `Tháng ${Month[m - 1]} ${day}, ${y}`;
+    } else {
+        day = `0${day}`.slice(-2);
+        m = `0${m}`.slice(-2);
+        format = `${day}/${m}/${y}`;
+    }
 
     return format;
 }

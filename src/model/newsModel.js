@@ -45,6 +45,7 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
       item["image"] = `${BaseUpload}${item["image"]}`;
       item['alias'] = alias(item['name']);
       item['type'] = alias(item['type']);
+      item['created_at'] = convertDate(item['created_at'], false);
       data.data.push(item);
     });
   }
@@ -58,24 +59,60 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
   return data;
 };
 
+const getListTag = async (arrayID) => {
+  let data = [];
+  let list_tags = arrayID.split(',');
+
+  let strID = "";
+  let listID = [];
+
+  if(Array.isArray(list_tags)) {
+    list_tags.forEach((item, index) => {
+      if(index > 0) {
+        strID += "OR";
+      }
+      strID += " ID = ?";
+      listID.push(item);
+    })
+  } else {
+    return data;
+  }
+
+  const [rows] = await pool.execute(
+    `SELECT ID as id, key_word FROM related_keywords WHERE ${strID}`,
+    [...listID]
+  );
+
+  if(rows.length > 0) {
+    rows.forEach((item) => {
+      item['alias'] = alias(item['key_word']);
+      data.push(item);
+    })
+  }
+
+  return data
+} 
+
 const getDetailsNews = async (BaseUpload, id) => {
   let data = {};
   if (!id) return data;
 
   const [rows, fields] = await pool.execute(
-    "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, HoTen as full_name, created_at, description FROM endow JOIN nhanvien ON endow.id_user = nhanvien.id WHERE endow.ID = ?",
+    "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, HoTen as full_name, created_at, ID_key_word as key_word, description FROM endow JOIN nhanvien ON endow.id_user = nhanvien.id WHERE endow.ID = ?",
     [id]
   );
 
   if (rows.length > 0) {
     rows[0].image = `${BaseUpload}${rows[0]['image']}`;
     rows[0]['created_at'] = convertDate(rows[0]['created_at']);
-
+    let list_tags = await getListTag(rows[0].key_word);  
+    rows[0].key_word = list_tags;
     data = rows[0];
   }
 
   return data;
 };
+
 
 const getSearchNews = async (
   BaseUpload,
