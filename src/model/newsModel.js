@@ -158,7 +158,7 @@ const getSearchNews = async (
 
 const getNewsByTag = async (
   BaseUpload,
-  id_tag = 1,
+  tagAlias = "",
   limit = 10,
   per_pager = 1
 ) => {
@@ -171,29 +171,36 @@ const getNewsByTag = async (
 
   let page = (per_pager - 1) * limit;
 
-  const [rows] = await pool.execute(
-    "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%') ORDER BY ID DESC LIMIT ?, ?",
-    [id_tag, id_tag, id_tag, id_tag, page, limit]
-  );
+  const [tag] = await pool.execute("SELECT ID as id FROM related_keywords WHERE alias= ?", [tagAlias]);
 
-  const [total] = await pool.execute(
-    "SELECT endow.ID FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%')",
-    [id_tag, id_tag, id_tag, id_tag]
-  );
+  if(tag.length > 0) {
+    let id_tag = tag[0].id;
 
-  if (rows.length > 0) {
-    rows.forEach((item) => {
-      item["image"] = `${BaseUpload}${item["image"]}`;
-      item['alias'] = alias(item['name']);
-      data.data.push(item);
-    });
+    const [rows] = await pool.execute(
+      "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%') ORDER BY ID DESC LIMIT ?, ?",
+      [id_tag, id_tag, id_tag, id_tag, page, limit]
+    );
+  
+    const [total] = await pool.execute(
+      "SELECT endow.ID FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%')",
+      [id_tag, id_tag, id_tag, id_tag]
+    );
+
+    if (rows.length > 0) {
+      rows.forEach((item) => {
+        item["image"] = `${BaseUpload}${item["image"]}`;
+        item['alias'] = alias(item['name']);
+        data.data.push(item);
+      });
+    }
+  
+    if (total) {
+      data.paging.limit = limit;
+      data.paging.per_pager = per_pager;
+      data.paging.total = total.length;
+    }
   }
 
-  if (total) {
-    data.paging.limit = limit;
-    data.paging.per_pager = per_pager;
-    data.paging.total = total.length;
-  }
 
   return data;
 };

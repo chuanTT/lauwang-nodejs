@@ -51,7 +51,6 @@ const SearchTagNews = async (req, res) => {
 
     let {tag, limit, per_pages} = req.params;
 
-    tag=parseInt(tag);
     limit=parseInt(limit);
     per_pages=parseInt(per_pages);
 
