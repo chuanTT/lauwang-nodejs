@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // allow 
-app.use(express.static('./src/public'));
+app.use(express.static('./src/public/'));
 
 // 
 app.use(express.urlencoded({extended: true}));
