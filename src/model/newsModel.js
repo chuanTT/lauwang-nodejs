@@ -74,7 +74,7 @@ const getListTag = async (arrayID) => {
       if (index > 0) {
         strID += "OR";
       }
-      strID += " ID = ?";
+      strID += " ID = ? ";
       listID.push(item);
     });
   } else {
