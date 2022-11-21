@@ -23,14 +23,13 @@ const DetailsNews = async (req, res) => {
   let BaseUpload = `${baseUrl}/${uploadFolder}`;
 
   let { id } = req.params;
-  
-  console.log(id);
 
-//   id = parseInt(id);
 
-//   const data = await newsModel.getDetailsNews(BaseUpload, id);
+  id = parseInt(id);
 
-//   return res.status(200).json(data);
+  const data = await newsModel.getDetailsNews(BaseUpload, id);
+
+  return res.status(200).json(data);
 };
 
 const SearchNews = async (req, res) => {
