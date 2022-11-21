@@ -34,7 +34,7 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
     result = [page, limit];
 
     sqlTotal =
-      "SELECT endow.ID FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id ORDER BY ID DESC";
+      "SELECT ID FROM endow ORDER BY ID DESC";
   }
 
   const [rows] = await pool.execute(sql, [...result]);
