@@ -47,10 +47,10 @@ const AddMenuModel = async (data) => {
   let [rows] = await pool.execute(sql, [...data]);
 
   try {
-    result.stats = 200
+    result.status = 200
     result.msg= "Thêm dữ liệu thành công"
   } catch(err) {
-    result.stats = 402
+    result.status = 402
     result.msg= "Thêm dữ liệu thất bại"
   }
 

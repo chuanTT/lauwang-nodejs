@@ -26,7 +26,7 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
     result = [type, page, limit];
 
     sqlTotal =
-      "SELECT endow.ID FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_Type = ? ORDER BY ID DESC";
+      "SELECT endow.ID FROM endow WHERE ID_Type = ? ORDER BY ID DESC";
     totalResult = [type];
   } else {
     sql =
@@ -37,9 +37,9 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
       "SELECT ID FROM endow ORDER BY ID DESC";
   }
 
-  const [rows] = await pool.execute(sql, [...result]);
+  const [rows] = await pool.execute(sql, result);
 
-  const [total] = await pool.execute(sqlTotal, [...totalResult]);
+  const [total] = await pool.execute(sqlTotal, totalResult);
 
   if (rows.length > 0) {
     rows.forEach((item) => {
