@@ -75,8 +75,9 @@ const alias = (str) => {
     aliasStr = str.toLowerCase();
     aliasStr = removeVietnameseTones(aliasStr);
     aliasStr = aliasStr.trim();
-    aliasStr = aliasStr.toString().replaceAll(/\s{2,}/g, "-");
-    aliasStr = aliasStr.toString().replaceAll(/\s/g, "-");
+    console.log(aliasStr)
+//     aliasStr = aliasStr.toString().replaceAll(/\s{2,}/g, "-");
+//     aliasStr = aliasStr.toString().replaceAll(/\s/g, "-");
   }
 
   return aliasStr;
