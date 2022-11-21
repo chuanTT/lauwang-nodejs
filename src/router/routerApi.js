@@ -28,7 +28,7 @@ const ApiRouter = (app) => {
   // end router news
 
   // router tables
-  router.get("/table/list_base", verifyToken, tableController.ListBase);
+  router.get("/table/list_base", tableController.ListBase);
   router.post("/table/book_table", tableController.BookTable);
   // end router tables
 

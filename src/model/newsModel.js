@@ -247,7 +247,7 @@ const AddNews = async (data) => {
     msg: "Thêm dữ liệu thất bại",
   };
 
-  let sql = "INSERT INTO thucdon (Ten, gia, MoTa, image) VALUES (?, ?, ?, ?)";
+  let sql = "INSERT INTO thucdon (title, shortContent, description, image) VALUES (?, ?, ?, ?)";
 
   let [rows] = await pool.execute(sql, [...data]);
 

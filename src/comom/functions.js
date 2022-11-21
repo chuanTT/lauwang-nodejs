@@ -28,6 +28,7 @@ const imageFilter = function (req, file, cb) {
     req.fileValidationError = "Only image files are allowed!";
     return cb(new Error("Only image files are allowed!"), false);
   }
+
   cb(null, true);
 };
 
@@ -171,5 +172,6 @@ module.exports = {
   initStorage,
   imageFilter,
   multerSingle,
-  unlinkFile
+  unlinkFile,
+  multer
 };

@@ -1,4 +1,4 @@
-const { getBaseUrl, multerSingle, unlinkFile } = require("../comom/functions");
+const { getBaseUrl, multerSingle, unlinkFile, multer } = require("../comom/functions");
 const menuModel = require("../model/menuModel");
 
 const uploadFolder = "/upload/menu/";
@@ -34,11 +34,6 @@ const AddMenu = async (req, res) => {
         msg: "Please select an image to upload",
       });
     } else if (err instanceof multer.MulterError) {
-      return res.status(200).json({
-        status: 402,
-        msg: "Upload file error",
-      });
-    } else if (err) {
       return res.status(200).json({
         status: 402,
         msg: "Upload file error",
