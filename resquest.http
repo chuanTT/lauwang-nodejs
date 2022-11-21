@@ -13,7 +13,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZnVsbF9uY
 
 ###
 
-GET  http://localhost:3020/api/news/list_news/1/3/1
+GET  http://localhost:3020/api/news/details_news/35
+###
+
+GET http://localhost:3020/api/news/search_tag_news/khuyen-mai-lau-wang/12/1
 
 
 

@@ -18,6 +18,8 @@ const ListNews = async (req, res) => {
   return res.status(200).json(data);
 };
 
+
+
 const DetailsNews = async (req, res) => {
   let baseUrl = getBaseUrl(req);
   let BaseUpload = `${baseUrl}/${uploadFolder}`;
