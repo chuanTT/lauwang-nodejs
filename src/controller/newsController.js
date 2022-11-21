@@ -26,6 +26,7 @@ const DetailsNews = async (req, res) => {
 
   let { id } = req.params;
 
+
   id = parseInt(id);
 
   const data = await newsModel.getDetailsNews(BaseUpload, id);
