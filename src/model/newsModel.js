@@ -180,6 +180,7 @@ const getNewsByTag = async (
 
   if (tag.length > 0) {
     let id_tag = tag[0].id;
+    data.tags = tag[0].name;
 
     const [rows] = await pool.execute(
       "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%') ORDER BY ID DESC LIMIT ?, ?",
