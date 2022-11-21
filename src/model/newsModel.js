@@ -99,7 +99,7 @@ const getDetailsNews = async (BaseUpload, id) => {
   if (!id) return data;
 
   const [rows, fields] = await pool.execute(
-    "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, HoTen as full_name, created_at, ID_key_word as key_word, description FROM endow JOIN nhanvien ON endow.id_user = nhanvien.id WHERE endow.ID = ?",
+    "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, HoTen as full_name, created_at, ID_key_word as key_word, description FROM endow JOIN nhanvien ON endow.id_user = nhanvien.id WHERE ID = ?",
     [id]
   );
 
