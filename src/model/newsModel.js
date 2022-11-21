@@ -174,7 +174,7 @@ const getNewsByTag = async (
   let page = (per_pager - 1) * limit;
 
   const [tag] = await pool.execute(
-    "SELECT ID as id FROM related_keywords WHERE alias= ?",
+    "SELECT ID as id, key_word as name FROM related_keywords WHERE alias= ?",
     [tagAlias]
   );
 
