@@ -63,6 +63,8 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
 const getListTag = async (arrayID) => {
   let data = [];
   let list_tags = arrayID.split(",");
+  
+  console.log(list_tags);
 
   let strID = "";
   let listID = [];
