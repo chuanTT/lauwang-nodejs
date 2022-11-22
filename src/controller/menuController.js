@@ -65,6 +65,8 @@ const deleteMenu = async (req, res) => {
 
   let oldImg = await menuModel.getNameThumbnail(id);
 
+  console.log(oldImg);
+
   if (oldImg) {
     let isCheck = await menuModel.DeletedMenu(id);
 

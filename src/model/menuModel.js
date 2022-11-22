@@ -65,7 +65,7 @@ const DeletedMenu = async (id) => {
 
   const [isCheck] = await pool.execute("DELETE FROM `thucdon` WHERE `thucdon`.`Ma` = ?", [id]);
 
-  if(isCheck) {
+  if(isCheck.affectedRows > 0) {
     data.status = 200;
     data.msg = "Xóa thành công";
   }

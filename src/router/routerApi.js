@@ -14,7 +14,7 @@ const ApiRouter = (app) => {
   // router menu
   router.get("/menu/list_menu/:limit/:per_pages", menuController.ListMenu);
   router.post("/menu/add_menu", verifyToken, uploadMenu.single('thumbnail'), menuController.AddMenu)
-  router.post("/menu/delete_menu/:id",verifyToken,menuController.deleteMenu);
+  router.delete("/menu/delete_menu/:id",verifyToken,menuController.deleteMenu);
   router.post("/menu/edit_menu",verifyToken,uploadMenu.single('thumbnail'),menuController.deleteMenu);
   // end router menu
 
@@ -40,7 +40,7 @@ const ApiRouter = (app) => {
   // router table private
   router.get("/table/list_table_peding/:limit/:per_pages", verifyToken, tableController.ListTablePeding)
   router.get("/table/list_table_pay/:id_base/:type/:limit/:per_pages", verifyToken, tableController.ListTablePay)
-  router.get("/table/cancel_order/:id", verifyToken, tableController.cancelOrder);
+  router.delete("/table/cancel_order/:id", verifyToken, tableController.cancelOrder);
   router.get("/table/pay_table/:id", verifyToken, tableController.payTableGuest);
   router.get("/table/susses_table/:id_temp/:id_table", verifyToken, tableController.sussesTable);
   router.post("/table/add_base", verifyToken, tableController.AddBaseName);

@@ -73,18 +73,20 @@ const ListTablePay = async (req, res) => {
 }
 
 const cancelOrder = async (req, res) => {
-  let {id} = req.body;
+  let {id} = req.params;
 
   if(!id) return;
   
   let isSussess = await tableModel.deleteOrder(id);
-  let msg = "Hủy đặt bàn thất bạn";
-  if(isSussess) {
-    msg = "Hủy đặt bàn thành công";
+  let result = {
+    status: 403,
+    msg: "Hủy đặt bàn thất bại"
   }
-  return res.json({
-    msg
-  })
+  if(isSussess) {
+    result.msg = "Hủy đặt bàn thành công";
+    result.status = 200
+  }
+  return res.json(result)
 }
 
 const payTableGuest = async (req, res) => {

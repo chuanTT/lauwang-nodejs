@@ -60,12 +60,9 @@ const getTablePending = async (limit = 10, per_page = 1) => {
 
   if (rows.length > 0) {
     for(let item of rows) {
-      let id = await GetIDByBase(item.base);
-
-      data.data.push({...item,"list_table": id})
+      item['date'] = convertDate(item['date']);
+      data.data.push(item)
     }
-
-    await Promise.all(data.data);
   } 
 
   return data;
@@ -146,7 +143,7 @@ const deleteOrder = async (id) => {
 
   const [susses] = await pool.execute("DELETE FROM order_temp WHERE ma=?", [id]);
 
-  if(susses) {
+  if(susses.affectedRows > 0) {
     isDelete = true;
   }
 
@@ -295,6 +292,7 @@ const AddTableBase = async (num, id_base) => {
 
   return data;
 }
+
 
 module.exports = {
   AddTableBook,

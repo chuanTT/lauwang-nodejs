@@ -98,7 +98,7 @@ const Month = [
 ];
 
 const convertDate = (date, formatDefault = true) => {
-  const d = new Date(date);
+  const d = new Date(+date);
   let day = d.getDate();
   let m = d.getMonth();
   let y = d.getFullYear();
