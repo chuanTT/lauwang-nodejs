@@ -1,6 +1,6 @@
 // connect database
 const pool = require("../config/configDB");
-const {isEmptyObj, convertDate} = require("../comom/functions");
+const {isEmptyObj, convertDate, removeProperty} = require("../comom/functions");
 
 const AddTableBook = async (data) => {
   let result = false;
@@ -89,7 +89,7 @@ const tableListPay = async (id_base, type = 0, limit = 10, per_page = 1) => {
     switch (type) {
       case 0:
         sql =
-          "SELECT MaBan as id, SoNguoiToiDa,DiaChi, TinhTrang FROM ban, coso  WHERE ban.MaCS = coso.Ma AND TinhTrang=? AND coso.Ma = ? ORDER BY MaBan DESC LIMIT ?, ?";
+          "SELECT MaBan as id, SoNguoiToiDa,DiaChi, TinhTrang FROM ban, coso  WHERE ban.MaCS = coso.Ma AND TinhTrang=? AND coso.Ma = ? ORDER BY MaBan ASC LIMIT ?, ?";
         resultSql = [type, id_base, page, limit];
 
         sqlTotal =
@@ -97,7 +97,7 @@ const tableListPay = async (id_base, type = 0, limit = 10, per_page = 1) => {
         resultSqlTolal = [type, id_base];
         break;
       case 1:
-        sql = `SELECT khachhang.MaCS,khachhang.id,khachhang.MaBan,khachhang.HoTen,khachhang.SDT,khachhang.Ngay, khachhang.Gio ,coso.DiaChi,ban.TinhTrang,num_adult,num_child 
+        sql = `SELECT khachhang.MaCS,khachhang.id,khachhang.MaBan,khachhang.HoTen as full_name,khachhang.SDT as phone,khachhang.Ngay as date, khachhang.Gio as hours,coso.DiaChi as name_base,ban.TinhTrang,num_adult,num_child 
           FROM khachhang, coso, ban WHERE khachhang.MaCS = coso.Ma AND ban.MaBan = khachhang.MaBan AND khachhang.MaCS =? LIMIT ?, ?`;
         resultSql = [id_base, page, limit];
 
@@ -113,6 +113,11 @@ const tableListPay = async (id_base, type = 0, limit = 10, per_page = 1) => {
     const [total] = await pool.execute(sqlTotal, resultSqlTolal);
   
     if (rows.length > 0) {
+      if(type === 1) {
+        rows.forEach((item) => {
+          item['date'] = convertDate(item['date']);
+        })
+      }
       data.data = rows;
     }
   
@@ -121,9 +126,8 @@ const tableListPay = async (id_base, type = 0, limit = 10, per_page = 1) => {
       data.paging.per_pager = per_page;
       data.paging.total = total.length;
     }
-  
-    return data;
   }
+  return data;
 };
 
 const GetIDByBase = async (id) => {
@@ -169,12 +173,11 @@ const susses_table = async (id_temp, id_table) => {
       num_child = order_temp['num_child'];
       note = order_temp['note'];
 
+      await AddGuest([HoTen, SDT, note, ngay, gio,num_adult,num_child, Dia_chi, id_table]);
 
-      AddGuest([HoTen, SDT, ngay, gio, Dia_chi, num_adult, num_child, note]);
+      await deleteOrder(id_temp);
 
-      deleteOrder(id_temp);
-
-      updateTable(Dia_chi);
+      await updateTable(Dia_chi);
 
       data.msg = "Duyệt bàn thành công";
       data.status = 200;
@@ -187,9 +190,10 @@ const susses_table = async (id_temp, id_table) => {
 const AddGuest = async (data) => {
   let isInsert = false;
 
-  const [check] = await pool.execute("INSERT INTO khachhang VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [...data])
+  const [check] = await pool.execute("INSERT INTO khachhang (HoTen, SDT, GhiChu, Ngay, Gio, num_adult, num_child, MaCS, MaBan) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
 
-  if(check) {
+
+  if(check.affectedRows > 0) {
     isInsert = true
   }
 
@@ -208,9 +212,9 @@ const getOneOrderTemp = async (id_temp) => {
 }
 
 const updateTable = async (id, type = 1) => {
-  const [update] = await pool.execute("UPDATE `ban` SET `TinhTrang` = b'?' WHERE `ban`.`MaBan` = ?", [type, id]);
+  const [update] = await pool.execute("UPDATE `ban` SET `TinhTrang` = ? WHERE `ban`.`MaBan` = ?", [type, id]);
   let isUpdate = false;
-  if(update) {
+  if(update.affectedRows > 0) {
     isUpdate = true;
   }
 
@@ -218,14 +222,9 @@ const updateTable = async (id, type = 1) => {
 }
 
 const payTable = async (id) => {
-  let checking = false;
-  const [check] = await DeleteGuest(id);
+  const check = await DeleteGuest(id);
 
-  if(check) {
-    checking = true;
-  }
-
-  return checking;
+  return check;
 }
 
 const getGuestTable = async (id) => {
@@ -242,10 +241,11 @@ const getGuestTable = async (id) => {
 const DeleteGuest = async (id) => {
   let isCheck = false;
   const idTable = await getGuestTable(id);
+
   if(idTable != 0) {
     const [check] = await pool.execute("DELETE FROM `khachhang` WHERE `khachhang`.`id` = ?", [id]);
-    if(check) {
-      const [checkTable] = await updateTable(idTable, 0);
+    if(check.affectedRows > 0) {
+      const checkTable = await updateTable(idTable, 0);
       if(checkTable) {
         isCheck = true;
       }
@@ -293,6 +293,24 @@ const AddTableBase = async (num, id_base) => {
   return data;
 }
 
+const getListOnePending = async (id) => {
+  let data = {}
+  let [rows] = await pool.execute(
+    `SELECT order_temp.ma as id, ho_ten as full_name, sdt as phone, ngay as date, gio as 
+  hours, dia_chi as base, coso.DiaChi as name_base, num_adult, num_child, note FROM coso JOIN order_temp ON coso.Ma = order_temp.dia_chi WHERE order_temp.ma = ?`,
+    [id]
+  );
+
+  if(rows.length > 0) {
+    let list_table = await GetIDByBase(rows[0].base);
+    rows[0]['list_table'] = list_table;
+    rows[0] = removeProperty('base', rows[0])
+    data = rows[0];
+  }
+
+  return data;
+}
+
 
 module.exports = {
   AddTableBook,
@@ -303,5 +321,6 @@ module.exports = {
   susses_table,
   payTable,
   AddBase,
-  AddTableBase
+  AddTableBase,
+  getListOnePending
 };

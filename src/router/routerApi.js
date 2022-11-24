@@ -13,9 +13,10 @@ const ApiRouter = (app) => {
 
   // router menu
   router.get("/menu/list_menu/:limit/:per_pages", menuController.ListMenu);
-  router.post("/menu/add_menu", verifyToken, uploadMenu.single('thumbnail'), menuController.AddMenu)
+  router.get("/menu/details_menu/:id",menuController.getDetailsMenu);
+  router.post("/menu/add_menu",verifyToken,uploadMenu.single('thumbnail'), menuController.AddMenu)
   router.delete("/menu/delete_menu/:id",verifyToken,menuController.deleteMenu);
-  router.post("/menu/edit_menu",verifyToken,uploadMenu.single('thumbnail'),menuController.deleteMenu);
+  router.put("/menu/edit_menu",verifyToken,uploadMenu.single('thumbnail'),menuController.editMenu);
   // end router menu
 
   // router news
@@ -34,17 +35,18 @@ const ApiRouter = (app) => {
 
   // router authen
   router.post("/user/login", userController.Login);
-  router.post("/user/get_data", verifyToken, userController.DataByToken);
+  router.get("/user/get_data", verifyToken, userController.DataByToken);
   // end router authe 
 
   // router table private
   router.get("/table/list_table_peding/:limit/:per_pages", verifyToken, tableController.ListTablePeding)
   router.get("/table/list_table_pay/:id_base/:type/:limit/:per_pages", verifyToken, tableController.ListTablePay)
   router.delete("/table/cancel_order/:id", verifyToken, tableController.cancelOrder);
-  router.get("/table/pay_table/:id", verifyToken, tableController.payTableGuest);
-  router.get("/table/susses_table/:id_temp/:id_table", verifyToken, tableController.sussesTable);
+  router.delete("/table/pay_table/:id", verifyToken, tableController.payTableGuest);
+  router.post("/table/susses_table", verifyToken, tableController.sussesTable);
   router.post("/table/add_base", verifyToken, tableController.AddBaseName);
   router.post("/table/add_table", verifyToken, tableController.AddTable);
+  router.get("/table/list_one_table_pending/:id", verifyToken, tableController.ListOnePending);
   // end router table private
 
 

@@ -1,9 +1,9 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const multer = require("multer");
-const fs = require("node:fs/promises");
+const fs = require("fs");
 const path = require("path");
-const DIR_ROOT = require('app-root-path');
+const DIR_ROOT = require("app-root-path");
 
 const initStorage = (pathName) => {
   let storage = multer.diskStorage({
@@ -11,7 +11,10 @@ const initStorage = (pathName) => {
       cb(null, `${DIR_ROOT}/src/public/upload/${pathName}`);
     },
     filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+      cb(
+        null,
+        file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      );
     },
   });
 
@@ -19,8 +22,8 @@ const initStorage = (pathName) => {
 };
 
 const multerSingle = (name) => {
-  return multer().single(name)
-}
+  return multer().single(name);
+};
 
 const imageFilter = function (req, file, cb) {
   // Accept images only
@@ -151,15 +154,16 @@ const removeProperty = (propKey, { [propKey]: propValue, ...rest }) => rest;
 
 const unlinkFile = async (pathName) => {
   let isChecking = false;
-  try {
-    await unlink(`${DIR_ROOT}/src/public/upload/${pathName}`);
-    isChecking = true;
-  } catch (error) {
+  let pathRoot = `${DIR_ROOT}/src/public/upload/${pathName}`;
+  if (fs.existsSync(pathRoot)) {
+    fs.unlinkSync(pathRoot);
+    isChecking = true
+  } else {
     isChecking = false
   }
 
   return isChecking;
-}
+};
 
 module.exports = {
   getBaseUrl,
@@ -173,5 +177,5 @@ module.exports = {
   imageFilter,
   multerSingle,
   unlinkFile,
-  multer
+  multer,
 };

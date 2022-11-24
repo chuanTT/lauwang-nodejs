@@ -8,8 +8,14 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3020/api/table/list_table_peding/2/1
+POST http://localhost:3020/api/table/susses_table
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZnVsbF9uYW1lIjoiTmd1eeG7hW4gxJDDrG5oIENodcOibiIsImF2YXRhciI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAyMC91cGxvYWQvdXNlci9oaW5oLWFuaC1naXJsLXhpbmgtdG9jLW5nYW4tZGUtdGh1b25nLmpwZyIsInJvbGUiOjEsImlhdCI6MTY2ODQyMjgwNCwiZXhwIjoxNjcwMDkxMzE0MDE2fQ.4tJQ60ptVdlMg_HzjJIT-MZ4OC9QD-2p1hWkZCXC8-k
+Content-Type: application/json
+
+{
+    "user_name": "Admin",
+    "password": "12345"
+}
 
 ###
 

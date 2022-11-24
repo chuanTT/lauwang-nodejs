@@ -85,6 +85,22 @@ const getNameThumbnail = async (id) => {
   return fileName;
 }
 
+const getDetailsMenu = async (id, BaseUpload) => {
+  let data = {};
+
+  const [rows] = await pool.execute(
+    "SELECT Ma as id, Ten as name, gia as price, image, MoTa as descption FROM thucdon WHERE Ma = ?",
+    [id]
+  );
+
+  if(rows.length > 0) {
+    rows[0].image = BaseUpload+rows[0].image;
+    data = rows[0];
+  } 
+
+  return data;
+}
+
 const editMenuModel = async (data, isUpload, fileName, id) => {
   let result = {
     status: 402,
@@ -105,10 +121,10 @@ const editMenuModel = async (data, isUpload, fileName, id) => {
   let [rows] = await pool.execute(sql, [...data]);
 
   try {
-    result.stats = 200
+    result.status = 200
     result.msg= "Upload dữ liệu thành công"
   } catch(err) {
-    result.stats = 402
+    result.status = 402
     result.msg= "Upload dữ liệu thất bại"
   }
 
@@ -120,5 +136,6 @@ module.exports = {
   AddMenuModel,
   DeletedMenu,
   getNameThumbnail,
-  editMenuModel
+  editMenuModel,
+  getDetailsMenu
 };
