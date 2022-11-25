@@ -1,5 +1,6 @@
 // connect database
 const pool = require("../config/configDB");
+const {unlinkFile} = require("../comom/functions");
 
 const getListMenu = async (BaseUpload, limit = 10, per_pager = 1) => {
   const data = {
@@ -108,9 +109,10 @@ const editMenuModel = async (data, isUpload, fileName, id) => {
   }
 
   let sql = "UPDATE `thucdon` SET `Ten` = ?, `gia` = ?,`MoTa` = ? DATAIMG WHERE `thucdon`.`Ma` = ?";
+  let oldImg = await getNameThumbnail(id);
 
   if(isUpload) {
-    sql = sql.replace('DATAIMG', 'image=?');
+    sql = sql.replace('DATAIMG', ',image = ?');
     data.push(fileName);
   } else {
     sql = sql.replace('DATAIMG', '');
@@ -120,12 +122,13 @@ const editMenuModel = async (data, isUpload, fileName, id) => {
 
   let [rows] = await pool.execute(sql, [...data]);
 
-  try {
+  if(rows.affectedRows > 0) {
+    if(isUpload) {
+      unlinkFile(`menu/${oldImg}`);
+    }
+
     result.status = 200
     result.msg= "Upload dữ liệu thành công"
-  } catch(err) {
-    result.status = 402
-    result.msg= "Upload dữ liệu thất bại"
   }
 
   return result;

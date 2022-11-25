@@ -26,7 +26,7 @@ GET http://localhost:3020/api/news/search_tag_news/khuyen-mai-lau-wang/12/1
 
 ###
 
-DELETE http://localhost:3020/api/table/cancel_order/26
+GET http://localhost:3020/api/menu/details_menu/25
 Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6MSwiYXZhdGFyIjoiaHR0cDovL2xvY2FsaG9zdDozMDIwL3VwbG9hZC91c2VyL3VuZGVmaW5lZCIsImlhdCI6MTY2OTA4ODc1NCwiZXhwIjoxNjcwODQ0MjQyOTYyfQ.QyDvkjHV6tCZRMTFLw8QiZnMa7bsPTf9HlGIeA5MpoM
 
 ###

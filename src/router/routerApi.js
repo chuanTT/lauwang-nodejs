@@ -25,7 +25,7 @@ const ApiRouter = (app) => {
   router.get("/news/search_news/:keyword/:limit/:per_pages", newsController.SearchNews);
   router.get("/news/search_tag_news/:tag/:limit/:per_pages", newsController.SearchTagNews);
 
-  router.get("/news/delete_news/:id",verifyToken,newsController.deleteNews);
+  router.delete("/news/delete_news/:id",verifyToken,newsController.deleteNews);
   // end router news
 
   // router tables
@@ -36,6 +36,7 @@ const ApiRouter = (app) => {
   // router authen
   router.post("/user/login", userController.Login);
   router.get("/user/get_data", verifyToken, userController.DataByToken);
+  router.get("/user/list_user/:id/:limit/:perPages", verifyToken, userController.GetListUser);
   // end router authe 
 
   // router table private

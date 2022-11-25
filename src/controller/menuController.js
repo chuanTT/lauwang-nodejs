@@ -12,7 +12,10 @@ const uploadFolder = "/upload/menu/";
 const ListMenu = async (req, res) => {
   let baseUrl = getBaseUrl(req);
   let BaseUpload = `${baseUrl}${uploadFolder}`;
-
+  let result = {
+    status: 403,
+    msg: "Get data erorr"
+  }
   let { limit, per_pages } = req.params;
 
   limit = parseInt(limit);
@@ -20,7 +23,13 @@ const ListMenu = async (req, res) => {
 
   const data = await menuModel.getListMenu(BaseUpload, limit, per_pages);
 
-  return res.status(200).json(data);
+  if(data.data.length > 0) {
+    result.status = 200
+    result.msg = "Get data sussessfull"
+    result.data = data
+  }
+
+  return res.status(200).json(result);
 };
 
 let upload = multerSingle("thumbnail");
@@ -54,7 +63,7 @@ const AddMenu = async (req, res) => {
       return res.status(200).json(isCheck);
     });
   } else {
-    if(req.file) {
+    if (req.file) {
       unlinkFile(`menu/${req.file.filename}`);
     }
 
@@ -90,62 +99,76 @@ const deleteMenu = async (req, res) => {
 
 const editMenu = (req, res) => {
   let isUploadFile = true;
+  let { name, price, desc, id } = req.body;
 
-  upload(req, res, async function (err) {
-    // req.file contains information of uploaded file
-    // req.body contains information of text fields, if there were any
-    if (req.fileValidationError) {
-      return res.status(200).json({
-        status: 402,
-        msg: "upload file error",
-      });
-    } else if (!req.file) {
-      isUploadFile = false;
+  if (name && price && desc && id) {
+    upload(req, res, async function (err) {
+      // req.file contains information of uploaded file
+      // req.body contains information of text fields, if there were any
+      if (req.fileValidationError) {
+        return res.status(200).json({
+          status: 402,
+          msg: "upload file error",
+        });
+      } else if (!req.file) {
+        isUploadFile = false;
+      }
+
+      const result = await menuModel.editMenuModel(
+        [name, price, desc],
+        isUploadFile,
+        req.file?.filename,
+        id
+      );
+
+      if (result.status !== 200) {
+        if (req.file) {
+          unlinkFile(`menu/${req.file.filename}`);
+        }
+      }
+
+      return res.status(200).json(result);
+    });
+  } else {
+    if (req.file) {
+      unlinkFile(`menu/${req.file.filename}`);
     }
 
-    let { name, price, desc, id } = req.body;
-
-    const isCheck = await menuModel.editMenuModel(
-      [name, price, desc],
-      isUploadFile,
-      req.file.filename,
-      id
-    );
-
-    return res.status(200).json(isCheck);
-  });
+    return res.status(200).json({
+      status: 402,
+      msg: "Vui lòng nhập tất cả các trường",
+    });
+  }
 };
-
 
 const getDetailsMenu = async (req, res) => {
   let baseUrl = getBaseUrl(req);
   let BaseUpload = `${baseUrl}${uploadFolder}`;
   const result = {
     status: 403,
-    msg: "Get data error"
-  }
-  let {id} = req.params;
+    msg: "Get data error",
+  };
+  let { id } = req.params;
 
-  if(!id) {
+  if (!id) {
     return res.status(200).json(result);
   }
 
   let data = await menuModel.getDetailsMenu(id, BaseUpload);
 
-  if(!isEmptyObj(data)) {
-    result.status = 200
-    result.msg = "Get data sussessfull"
+  if (!isEmptyObj(data)) {
+    result.status = 200;
+    result.msg = "Get data sussessfull";
     result.data = data;
   }
 
-  return res.status(200).json(result)
-}
-
+  return res.status(200).json(result);
+};
 
 module.exports = {
   ListMenu,
   AddMenu,
   deleteMenu,
   editMenu,
-  getDetailsMenu
+  getDetailsMenu,
 };

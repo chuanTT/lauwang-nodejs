@@ -21,14 +21,14 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
 
   if (typeNews.includes(type)) {
     sql =
-      "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, id_user, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_Type = ? ORDER BY ID DESC LIMIT ?, ?";
+      "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, HoTen as poster, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id JOIN nhanvien ON nhanvien.id = endow.id_user  WHERE ID_Type = ? ORDER BY ID DESC LIMIT ?, ?";
     result = [type, page, limit];
 
     sqlTotal = "SELECT endow.ID FROM endow WHERE ID_Type = ? ORDER BY ID DESC";
     totalResult = [type];
   } else {
     sql =
-      "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, id_user, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id ORDER BY ID DESC LIMIT ?, ?";
+      "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, HoTen as poster, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id JOIN nhanvien ON nhanvien.id = endow.id_user  ORDER BY ID DESC LIMIT ?, ?";
     result = [page, limit];
 
     sqlTotal = "SELECT ID FROM endow ORDER BY ID DESC";
@@ -220,7 +220,7 @@ const DeletedNews = async (id) => {
     [id]
   );
 
-  if (isCheck) {
+  if (isCheck.affectedRows > 0) {
     data.status = 200;
     data.msg = "Xóa thành công";
   }

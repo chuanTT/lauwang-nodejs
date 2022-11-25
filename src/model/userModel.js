@@ -16,7 +16,7 @@ const getFullName = async (id) => {
   return FullName;
 };
 
-const getListUser = async (id,limit, per_pager) => {
+const getListUser = async (id, limit, per_pager, BaseUpload) => {
   const data = {
     paging: {},
     data: [],
@@ -27,7 +27,7 @@ const getListUser = async (id,limit, per_pager) => {
   let page = (per_pager - 1) * limit;
 
   const [rows] = await pool.execute(
-    "SELECT nhanvien.userName,nhanvien.id,avatar, HoTen, NgaySinh, SDT, DiaChi,deleted, role.nameRole FROM nhanvien JOIN role ON nhanvien.ID_role = role.ID WHERE nhanvien.id <> ? ORDER BY ID DESC LIMIT ?, ?",
+    "SELECT nhanvien.user_name,nhanvien.id,avatar, HoTen, NgaySinh, SDT, DiaChi,deleted, role.nameRole FROM nhanvien JOIN role ON nhanvien.ID_role = role.ID WHERE nhanvien.id <> ? ORDER BY ID DESC LIMIT ?, ?",
     [id, page, limit]
   );
 

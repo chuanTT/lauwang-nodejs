@@ -7,6 +7,11 @@ const ListNews = async (req, res) => {
   let baseUrl = getBaseUrl(req);
   let BaseUpload = `${baseUrl}/${uploadFolder}`;
 
+  let result = {
+    status: 403,
+    msg: "Get data erorr"
+  }
+
   let { type, limit, per_pages } = req.params;
 
   type = parseInt(type);
@@ -14,6 +19,13 @@ const ListNews = async (req, res) => {
   per_pages = parseInt(per_pages);
 
   const data = await newsModel.getListNews(BaseUpload, type, limit, per_pages);
+
+  if(data.data.length > 0) {
+    result.status = 200
+    result.msg = "Get data sussessfull"
+    result.data = data
+  }
+
 
   return res.status(200).json(data);
 };

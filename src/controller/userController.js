@@ -74,7 +74,29 @@ const DataByToken = async (req, res) => {
   })
 }
 
+const GetListUser = async (req, res) => {
+  let result = {
+    status: 403,
+    msg: "Get data erorr"
+  }
+  let baseUrl = getBaseUrl(req);
+  let BaseUpload = `${baseUrl}/${uploadFolder}`;
+
+  let {id, limit, perPages} = req.params;
+
+  let data = await useModel.getListUser(id, limit, perPages, BaseUpload);
+
+  if(data.data.length > 0) {
+    result.status = 200
+    result.msg = "Get data sussessfull"
+    result.data = data
+  }
+
+  return res.status(200).json(result);
+}
+
 module.exports = {
   Login,
-  DataByToken
+  DataByToken,
+  GetListUser
 };
