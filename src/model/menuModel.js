@@ -14,7 +14,7 @@ const getListMenu = async (BaseUpload, limit = 10, per_pager = 1) => {
 
   const [rows, fields] = await pool.execute(
     "SELECT Ma as id, Ten as name, gia as price, image, MoTa as descption FROM thucdon ORDER BY Ma DESC LIMIT ?, ?",
-    [page, limit]
+    [page.toString(), limit.toString()]
   );
 
   const [total] = await pool.execute(

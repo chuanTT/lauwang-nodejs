@@ -28,7 +28,7 @@ const getListUser = async (id, limit, per_pager, BaseUpload) => {
 
   const [rows] = await pool.execute(
     "SELECT nhanvien.user_name,nhanvien.id,avatar, HoTen, NgaySinh, SDT, DiaChi,deleted, role.nameRole FROM nhanvien JOIN role ON nhanvien.ID_role = role.ID WHERE nhanvien.id <> ? ORDER BY ID DESC LIMIT ?, ?",
-    [id, page, limit]
+    [id, page.toString(), limit.toString()]
   );
 
   const [total] = await pool.execute(

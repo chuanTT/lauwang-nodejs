@@ -29,7 +29,7 @@ const getListNews = async (BaseUpload, type = 0, limit = 10, per_pager = 1) => {
   } else {
     sql =
       "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, HoTen as poster, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id JOIN nhanvien ON nhanvien.id = endow.id_user  ORDER BY ID DESC LIMIT ?, ?";
-    result = [page, limit];
+    result = [page.toString(), limit.toString()];
 
     sqlTotal = "SELECT ID FROM endow ORDER BY ID DESC";
   }
@@ -182,7 +182,7 @@ const getNewsByTag = async (
 
     const [rows] = await pool.execute(
       "SELECT endow.ID as id, title as name, representativeImage as image, shortContent, nameNews as type, created_at FROM endow JOIN kind_of_news ON endow.ID_Type = kind_of_news.id WHERE ID_key_word LIKE CONCAT('%,', ? ) OR ID_key_word LIKE CONCAT(?,',%') OR ID_key_word LIKE CONCAT('%,', ?,  ',%') OR ID_key_word LIKE CONCAT('%', ?, '%') ORDER BY ID DESC LIMIT ?, ?",
-      [id_tag, id_tag, id_tag, id_tag, page, limit]
+      [id_tag, id_tag, id_tag, id_tag, page.toString(), limit.toString()]
     );
 
     const [total] = await pool.execute(

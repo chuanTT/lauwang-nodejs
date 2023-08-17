@@ -45,7 +45,7 @@ const getTablePending = async (limit = 10, per_page = 1) => {
   const [rows] = await pool.execute(
     `SELECT order_temp.ma as id, ho_ten as full_name, sdt as phone, ngay as date, gio as 
   hours, dia_chi as base, coso.DiaChi as name_base, num_adult, num_child, note FROM coso JOIN order_temp ON coso.Ma = order_temp.dia_chi ORDER BY order_temp.ma DESC LIMIT ?, ?`,
-    [page, limit]
+    [page.toString(), limit.toString()]
   );
 
   const [total] = await pool.execute(
