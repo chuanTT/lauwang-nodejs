@@ -90,16 +90,16 @@ const tableListPay = async (id_base, type = 0, limit = 10, per_page = 1) => {
       case 0:
         sql =
           "SELECT MaBan as id, SoNguoiToiDa,DiaChi, TinhTrang FROM ban, coso  WHERE ban.MaCS = coso.Ma AND TinhTrang=? AND coso.Ma = ? ORDER BY MaBan ASC LIMIT ?, ?";
-        resultSql = [type, id_base, page, limit];
+        resultSql = [type, id_base, page.toString(), limit.toString()];
 
         sqlTotal =
           "SELECT MaBan as id FROM ban, coso  WHERE ban.MaCS = coso.Ma AND TinhTrang=? AND coso.Ma = ?";
         resultSqlTolal = [type, id_base];
         break;
       case 1:
-        sql = `SELECT khachhang.MaCS,khachhang.id,khachhang.MaBan,khachhang.HoTen as full_name,khachhang.SDT as phone,khachhang.Ngay as date, khachhang.Gio as hours,coso.DiaChi as name_base,ban.TinhTrang,num_adult,num_child 
+        sql = `SELECT khachhang.MaCS,khachhang.id,khachhang.MaBan,khachhang.HoTen as full_name,khachhang.SDT as phone,khachhang.Ngay as date, khachhang.Gio as hours,coso.DiaChi as name_base,ban.TinhTrang,khachhang.num_adult,khachhang.num_child 
           FROM khachhang, coso, ban WHERE khachhang.MaCS = coso.Ma AND ban.MaBan = khachhang.MaBan AND khachhang.MaCS =? LIMIT ?, ?`;
-        resultSql = [id_base, page, limit];
+        resultSql = [id_base, page.toString(), limit.toString()];
 
         sqlTotal =
           "SELECT khachhang.MaCS FROM khachhang, coso, ban WHERE khachhang.MaCS = coso.Ma AND ban.MaBan = khachhang.MaBan AND khachhang.MaCS = ?";

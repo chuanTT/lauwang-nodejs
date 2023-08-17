@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const ApiRouter = require("./router/routerApi");
+const { bcryptPass } = require("./comom/functions");
 
 // setUp dotenv
 require("dotenv").config();
